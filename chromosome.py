@@ -1,6 +1,6 @@
 import random
 
-class Crhromosome:
+class Chromosome:
 
     def __init__(self, mut_prob, recomb_prob, epochs):
         
