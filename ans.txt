@@ -1,0 +1,2 @@
+extractor for the best model is resnet18
+number of added hidden layers: 0
