@@ -12,10 +12,8 @@ POPULATION_SIZE = 10
 MUT_PROB = 0.9
 RECOMB_PROB = 0.5
 
-TRAIN_DATA_BATCH_SIZE = 4
-TEST_DATA_BATCH_SIZE = 4
 BATCH_SIZE = 32
-IMAGE_RSIZE = 128
+IMAGE_RSIZE = 32
 
 histories = []
 transform = transforms.Compose([
@@ -40,7 +38,7 @@ if __name__ == "__main__":
     np.savetxt("histories.csv", histories,
                 delimiter = ",")
 
-    print(best_ans.fitness)
+    print(f"Test Accuracy of the best model is{best_ans.fitness}")
 
     original_stdout = sys.stdout
     with open('ans.txt', 'w') as f:
@@ -53,7 +51,7 @@ if __name__ == "__main__":
                     print(f"extractor for the best model is {bes_ext}")
                     print(f"number of added hidden layers: {len(best_ans.net['mlp'])}")
                     if len(best_ans.net['mlp']) > 0:
-                            for i in range(best_ans.net['mlp']):
+                            for i in range(len(best_ans.net['mlp'])):
                                     print(f"layer {i+1} neurons: {best_ans.net['mlp'][i][0]}")
                                     act =  "ReLU" if best_ans.net['mlp'][i][1] == 1 else "Sigmoid"
                                     print(f"layer {i+1} activation function: {act}")

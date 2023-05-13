@@ -1,2 +1,4 @@
-extractor for the best model is resnet18
-number of added hidden layers: 0
+extractor for the best model is vgg11
+number of added hidden layers: 1
+layer 1 neurons: 30
+layer 1 activation function: Sigmoid

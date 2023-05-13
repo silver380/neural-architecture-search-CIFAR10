@@ -99,7 +99,7 @@ class EvolutionaryAlgorithm:
             self.current_iter += 1
             best_current = sorted(self.population, key=lambda agent: agent.fitness, reverse=True)[0]
             print(f"current iteration: {self.current_iter} / {self.n_iter}",
-                  f", best fitness: {best_current.fitness}")
+                  f", best fitness: {best_current.fitness}, average fitness: {self.fitness_avg}")
             print(f'Network: {best_current.net}')
             print("-------------------------------------------------------------------------------------------------")
             self.fitness_history.append(self.fitness_avg)

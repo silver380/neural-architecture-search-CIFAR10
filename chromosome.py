@@ -59,8 +59,8 @@ class Chromosome:
         self.mut_add()
         self.calculate_fitness()
 
-    def calculate_fitness(self):
-        # creating the model:
+    def build_model(self):
+    # creating the model:
         # extractor == vgg11
         model = None
         num_features = 0
@@ -94,16 +94,23 @@ class Chromosome:
             model.classifier = nn.Sequential(*classifier)
         else:
             model.fc = nn.Sequential(*classifier)
-        model.to(self.device)
 
-        # loss
-        criterion = nn.CrossEntropyLoss()
-        # optimizer
-        optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-        #acc = train_model(model, criterion, optimizer, self.device, self.dataloaders, self.dataset_sizes, 5)
-                #training and testing the model:
+        
+        return model
+        
+
+    def calculate_fitness(self):
+        
 
         for _ in range(self.num_test):
+            
+            model = self.build_model()
+            model.to(self.device)
+            # loss
+            criterion = nn.CrossEntropyLoss()
+            # optimizer
+            optimizer = optim.Adam([{'params': model.classifier.parameters() if self.net['extractor'] == 1 else
+                                model.fc.parameters(),'lr':0.001}], lr=0.001)
             #training
             model.train()
             with torch.set_grad_enabled(True):
