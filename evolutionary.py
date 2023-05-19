@@ -5,6 +5,19 @@ import util
 
 class EvolutionaryAlgorithm:
     def __init__(self, n_iter, mut_prob, recomb_prob, population_size, epochs, num_test, dataloaders, dataset_sizes):
+        """
+                Initialize the EvolutionaryAlgorithm class.
+
+                Args:
+                    n_iter (int): Number of iterations.
+                    mut_prob (float): Probability of mutation.
+                    recomb_prob (float): Probability of recombination.
+                    population_size (int): Size of the population.
+                    epochs (int): Number of epochs for training.
+                    num_test (int): Number of tests for fitness calculation.
+                    dataloaders (dict): Dictionary of data loaders for training and validation datasets.
+                    dataset_sizes (dict): Dictionary of dataset sizes for training and validation datasets.
+                """
         self.n_iter = n_iter
         self.mut_prob = mut_prob
         self.recomb_prob = recomb_prob
@@ -20,12 +33,23 @@ class EvolutionaryAlgorithm:
 
     # Random initialization
     def init_population(self):
+        """Initialize the population with random chromosomes."""
         for _ in range(self.population_size):
             young_pop = Chromosome(self.mut_prob, self.recomb_prob, self.epochs, self.num_test, self.dataloaders, self.dataset_sizes)
             self.population.append(young_pop)
 
     # Fitness Tournament selection
     def tournament_selection(self, tour_pop, k):
+        """
+        Perform fitness tournament selection.
+
+        Args:
+            tour_pop (list): List of chromosomes to select from.
+            k (int): Number of participants in the tournament.
+
+        Returns:
+            Chromosome: Selected chromosome.
+        """
         parents = random.sample(tour_pop, k=k)
         parents = sorted(parents, key=lambda agent: agent.fitness, reverse=True)
         bestparent = parents[0]
@@ -33,6 +57,12 @@ class EvolutionaryAlgorithm:
         return bestparent
 
     def parent_selection(self):
+        """
+        Perform parent selection using tournament selection.
+
+        Returns:
+            list: List of selected parent chromosomes.
+        """
         parents = []
         for _ in range(self.population_size):
             best_parent = self.tournament_selection(self.population,
@@ -43,6 +73,15 @@ class EvolutionaryAlgorithm:
 
     # One-point crossover
     def recombination(self, mating_pool):
+        """
+        Perform recombination (crossover) between chromosomes.
+
+        Args:
+            mating_pool (list): List of parent chromosomes.
+
+        Returns:
+            list: List of offspring chromosomes.
+        """
         youngs = []
         for _ in range(self.population_size // 2):
             parents = random.choices(mating_pool, k=2)
@@ -66,6 +105,15 @@ class EvolutionaryAlgorithm:
         return youngs
 
     def survival_selection(self, youngs):
+        """
+        Perform survival selection to determine the next population.
+
+        Args:
+            youngs (list): List of offspring chromosomes.
+
+        Returns:
+            list: List of chromosomes for the next population.
+        """
         mpl = self.population.copy() + youngs
         mpl = sorted(mpl, key=lambda agent: agent.fitness, reverse=True)
         mpl = mpl[:self.population_size].copy()
@@ -73,12 +121,22 @@ class EvolutionaryAlgorithm:
         return mpl
 
     def mutation(self, youngs):
+        """
+        Perform mutation on the offspring chromosomes.
+
+        Args:
+            youngs (list): List of offspring chromosomes.
+
+        Returns:
+            list: List of mutated chromosomes.
+        """
         for young in youngs:
             young.mutation()
 
         return youngs
 
     def calculate_fitness_avg(self):
+        """Calculate the average fitness of the current population. """
         self.fitness_avg = 0
         for pop in self.population:
             self.fitness_avg += pop.fitness
@@ -86,6 +144,12 @@ class EvolutionaryAlgorithm:
         self.fitness_avg /= self.population_size
 
     def run(self):
+        """
+        Run the evolutionary algorithm.
+
+        Returns:
+            tuple: A tuple containing the best chromosome and the list of average fitness values over iterations.
+        """
         self.init_population()
 
         for _ in range(self.n_iter):

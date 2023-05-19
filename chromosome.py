@@ -6,6 +6,17 @@ import torch.optim as optim
 from tqdm import tqdm
 
 class Chromosome:
+    """
+        Represents a chromosome in a genetic algorithm.
+
+        Args:
+            mut_prob (float): Mutation probability.
+            recomb_prob (float): Recombination probability.
+            epochs (int): Number of epochs for training.
+            num_test (int): Number of tests to calculate fitness.
+            dataloaders (dict): Dictionary of dataloaders for train and validation datasets.
+            dataset_sizes (dict): Dictionary of dataset sizes for train and validation datasets.
+        """
     def __init__(self, mut_prob, recomb_prob, epochs, num_test, dataloaders, dataset_sizes):
         self.net = {"extractor": 0, "mlp": []}
         self.mut_prob = mut_prob
@@ -19,6 +30,7 @@ class Chromosome:
         self.init_chromosome()
 
     def init_chromosome(self):
+        """Initialize the chromosome with random values."""
         self.net["extractor"] = random.randint(1, 3)
         mlp = []
         for _ in range(random.randint(0, 2)):
@@ -28,11 +40,13 @@ class Chromosome:
         self.net["mlp"] = mlp.copy()
 
     def mut_ext(self):
+        """Mutate the extractor gene."""
         prob = random.uniform(0, 1)
         if prob <= self.mut_prob:
             self.net["extractor"] = random.randint(1, 3)
 
     def mut_mlp(self):
+        """Mutate the MLP genes."""
         for i in range(len(self.net['mlp'])):
             prob = random.uniform(0, 1)
             if prob <= self.mut_prob:
@@ -40,12 +54,14 @@ class Chromosome:
                 self.net['mlp'][i] = h_new
 
     def mut_pop(self):
+        """Remove a gene from the MLP."""
         prob = random.uniform(0, 1)
         if prob <= self.mut_prob and len(self.net['mlp']) > 0:
             pop_id = random.randint(0, len(self.net['mlp']) - 1)
             self.net['mlp'].pop(pop_id)
 
     def mut_add(self):
+        """Add a new gene to the MLP."""
         prob = random.uniform(0, 1)
         if prob <= self.mut_prob and len(self.net['mlp']) < 2:
             h_new = (random.choice([10, 20, 30]), random.randint(1, 2))
@@ -53,6 +69,7 @@ class Chromosome:
             self.net['mlp'].insert(app_id, h_new)
 
     def mutation(self):
+        """Perform mutation on the chromosome."""
         self.mut_ext()
         self.mut_pop()
         self.mut_mlp()
@@ -60,6 +77,12 @@ class Chromosome:
         self.calculate_fitness()
 
     def build_model(self):
+        """
+        Build the neural network model based on the chromosome.
+
+        Returns:
+            torch.nn.Module: Built neural network model.
+        """
     # creating the model:
         # extractor == vgg11
         model = None
@@ -100,6 +123,14 @@ class Chromosome:
         
 
     def calculate_fitness(self):
+        """
+            Calculate the fitness of the chromosome based on the built model and test performance.
+
+            The fitness is calculated as the average accuracy over multiple tests.
+
+            Returns:
+                float: Fitness value.
+            """
         
 
         for _ in range(self.num_test):

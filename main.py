@@ -30,7 +30,7 @@ dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
 if __name__ == "__main__":
-
+    """ Main function for running the evolutionary algorithm."""
     ea = EvolutionaryAlgorithm(N_ITER, MUT_PROB, RECOMB_PROB, POPULATION_SIZE, EPOCHS, NUM_TEST, dataloaders, dataset_sizes)
     best_ans, history = ea.run()
     histories.append(history)
